@@ -4,7 +4,7 @@ from .models.robot_config import RobotConfig
 
 CONFIG = None  # Will be initialized when needed
 BLOSSOM_ROBOT = None  # Will be initialized when needed
-SEQUENCE_DIR = "./gestures/sequences"
+SEQUENCE_DIR = "./sequences"
 
 def get_config():
     global CONFIG
