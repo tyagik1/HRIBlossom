@@ -12,23 +12,68 @@ import * as Blockly from 'blockly/core';
 // This file has no side effects!
 export const forBlock = Object.create(null);
 
-forBlock['add_text'] = function (
+
+forBlock['create_sequence'] = function (
   block: Blockly.Block,
   generator: Blockly.CodeGenerator,
 ) {
-  const text = generator.valueToCode(block, 'TEXT', Order.NONE) || "''";
-  const addText = generator.provideFunction_(
-    'addText',
-    `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(text) {
+  const name = block.getFieldValue('NAME');
+  const frames = generator.statementToCode(block, 'FRAMES');
+  
+  const code = `animationData = {
+  "animation": "${name}",
+  "frame_list": [${frames}]
+};\n`;
+  return code;
+};
 
-  // Add text to the output area.
-  const outputDiv = document.getElementById('output');
-  const textEl = document.createElement('p');
-  textEl.innerText = text;
-  outputDiv.appendChild(textEl);
-}`,
-  );
-  // Generate the function call for this block.
-  const code = `${addText}(${text});\n`;
+forBlock['create_frame'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const millis = block.getFieldValue('MILLIS');
+  const positions = generator.statementToCode(block, 'POSITIONS');
+  
+  // Check if there's a next statement (more frames after this one)
+  const hasNext = block.getNextBlock();
+  const comma = hasNext ? ',' : '';
+  
+  const code = `{
+    "positions": [${positions}],
+    "millis": ${millis}
+  }${comma}`;
+  return code;
+};
+
+forBlock['set_position'] = function (
+  block: Blockly.Block,
+  generator: Blockly.CodeGenerator,
+) {
+  const tower1 = block.getFieldValue('TOWER1');
+  const tower2 = block.getFieldValue('TOWER2');
+  const tower3 = block.getFieldValue('TOWER3');
+  const base = block.getFieldValue('BASE');
+  const ears = block.getFieldValue('EARS');
+
+  const code = `{
+      "dof": "tower_1",
+      "pos": ${tower1}
+    },
+    {
+      "dof": "tower_2",
+      "pos": ${tower2}
+    },
+    {
+      "dof": "tower_3",
+      "pos": ${tower3}
+    },
+    {
+      "dof": "base",
+      "pos": ${base}
+    },
+    {
+      "dof": "ears",
+      "pos": ${ears}
+    }`;
   return code;
 };

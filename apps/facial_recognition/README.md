@@ -13,6 +13,8 @@ A real-time facial emotion recognition system using MediaPipe Face Mesh and mach
 
 ## Quick Start
 
+Python Scripts are under the assumption that you are at the root of the repository
+
 ### 1. Install Dependencies
 
 ```bash
@@ -24,7 +26,7 @@ pip install -r requirements.txt
 Run the data collection script to capture facial expressions for each emotion:
 
 ```bash
-python collect_images.py
+python -m apps.facial_recognition.collect_images
 ```
 
 **Controls:**
@@ -41,7 +43,7 @@ python collect_images.py
 Once you have collected sufficient data for each emotion:
 
 ```bash
-python train.py
+python -m apps.facial_recognition.train
 ```
 
 This will:
@@ -53,7 +55,7 @@ This will:
 ### 4. Run Real-time Recognition
 
 ```bash
-python main.py
+python -m apps.facial_recognition.main
 ```
 
 The system will start your webcam and display detected emotions in real-time.
@@ -62,25 +64,13 @@ The system will start your webcam and display detected emotions in real-time.
 
 ```
 facial_recognition/
-├── collect_images.py           # Data collection script
+├── collect_images.py          # Data collection script
 ├── train.py                   # Model training script
 ├── main.py                    # Real-time inference
-├── requirements.txt           # Python dependencies
 ├── README.md                  # This file
-├── emotion_training_data/     # Collected images (created automatically)
-│   ├── happy/
-│   ├── sad/
-│   ├── angry/
-│   ├── surprised/
-│   ├── neutral/
-│   ├── fear/
-│   └── disgust/
-└── model/
-    └── emotion_classifier/
+└── csv/
         ├── keypoint.csv                    # Training data
-        ├── emotion_classifier.tflite       # Trained model
-        ├── emotion_classifier_label.csv    # Emotion labels
-        └── emotion_classifier.py          # Classifier class
+        └── emotion_classifier_label.csv    # Emotion labels
 ```
 
 ## How It Works

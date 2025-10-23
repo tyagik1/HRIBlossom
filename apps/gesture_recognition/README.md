@@ -20,12 +20,14 @@ A keypoint-based hand gesture recognition system using MediaPipe Hand Landmarks 
 pip install -r requirements.txt
 ```
 
+Python Scripts are under the assumption that you are at the root of the repository
+
 ### 2. Collect Training Data
 
 Run the keypoint collection script:
 
 ```bash
-python collect_keypoints.py
+python -m apps.gesture_recognition.collect_images
 ```
 
 **Controls:**
@@ -40,7 +42,7 @@ The script will save hand landmark coordinates to `apps/gesture_recognition/csv/
 Once you have collected sufficient data for each gesture:
 
 ```bash
-python train_keypoints.py
+python -m apps.gesture_recognition.train
 ```
 
 This will:
@@ -52,7 +54,7 @@ This will:
 ### 4. Run Real-time Recognition
 
 ```bash
-python main.py
+python -m apps.gesture_recognition.main
 ```
 
 The system will start your webcam and display detected gestures in real-time.
@@ -61,19 +63,14 @@ The system will start your webcam and display detected gestures in real-time.
 
 ```
 gesture_recognition/
-├── collect_keypoints.py       # Keypoint data collection
-├── train_keypoints.py         # Model training script
+├── train.py                   # Model training script
 ├── main.py                    # Real-time inference
 ├── collect_images.py          # Legacy image collection (not used)
-├── requirements.txt           # Python dependencies
 ├── README.md                  # This file
 ├── csv/
-│   ├── keypoint.csv                    # Training data
-│   ├── gesture_classifier.tflite       # Trained model
-│   └── gesture_classifier_label.csv    # Gesture labels
-└── train/                     # Legacy Docker training (not used)
-    ├── Dockerfile
-    └── simple_train.py
+    ├── keypoint.csv                    # Training data
+    └── gesture_classifier_label.csv    # Gesture labels
+
 ```
 
 ## How It Works
