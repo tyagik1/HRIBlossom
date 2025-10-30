@@ -12,7 +12,7 @@ from apps.shared.constants import get_blossom_robot
 
 app = FastAPI()
 
-robot: BlossomRobot = None
+robot: BlossomRobot | None = None
 
 app.add_middleware(
     CORSMiddleware,

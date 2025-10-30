@@ -1,7 +1,7 @@
 from typing import List
 from pypot.dynamixel.io import Dxl320IO
 
-PORT = "COM6"
+PORT = "COM3"
 BAUDRATE = 1000000
 
 

@@ -25,16 +25,21 @@ class Sequence(Primitive):
             return None
 
         for frame in sequence_json["frame_list"]:
-            positions = [
-                Position(
-                    dof=p["dof"],
-                    pos=p["pos"],
-                )
-                for p in frame["positions"]
-            ]
-            frames.append(Frame(positions=positions, millis=frame["millis"]))
+            positions = []
+            for p in frame["positions"]:
+                try:
+                    positions.append(Position(
+                        dof=p["dof"],
+                        pos=p["pos"],
+                    ))
+                except Exception:
+                    # Skip invalid positions (e.g., unsupported DOF like 'arms')
+                    continue
+            
+            if positions:  # Only add frame if it has valid positions
+                frames.append(Frame(positions=positions, millis=frame["millis"]))
 
-        return frames
+        return frames if frames else None
 
     @classmethod
     def from_config(cls, sequence_path: str, robot: BlossomRobot):
@@ -70,9 +75,14 @@ class Sequence(Primitive):
         sequences: List["Sequence"] = []
         for file in os.listdir(SEQUENCE_DIR):
             if file.endswith("sequence.json"):
-                sequences.append(
-                    Sequence.from_config(os.path.join(SEQUENCE_DIR, file), get_blossom_robot())
-                )
+                try:
+                    seq = Sequence.from_config(os.path.join(SEQUENCE_DIR, file), get_blossom_robot())
+                    if seq is not None:
+                        sequences.append(seq)
+                except Exception as e:
+                    # Skip invalid sequences
+                    print(f"Warning: Skipping invalid sequence {file}: {e}")
+                    continue
         return sequences
 
     @staticmethod
@@ -122,14 +132,8 @@ class Sequence(Primitive):
 
         if converted_position > max_position:
             converted_position = max_position
-            print(
-                f"Position {motor} is out of range, clamped to {position} because max is {max_position}"
-            )
         elif converted_position < min_position:
             converted_position = min_position
-            print(
-                f"Position {motor} is out of range, clamped to {position} because min is {min_position}"
-            )
 
         return converted_position
 

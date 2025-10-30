@@ -54,14 +54,17 @@ def main():
                     
                     if user_text.strip():
                         print("Blossom: ", end="", flush=True)
-                        for chunk, metadata in chatbot.stream(
+                        for chunk in chatbot.stream(
                             {"messages": [HumanMessage(content=user_text)]}, 
                             config=config,
-                            stream_mode="messages"
+                            stream_mode="updates"
                         ):
-                            if isinstance(chunk, AIMessage):
-                                print(chunk.content, end="", flush=True)
-                        print()
+                            if "chatbot" in chunk:
+                                messages = chunk["chatbot"].get("messages", [])
+                                for msg in messages:
+                                    if isinstance(msg, AIMessage):
+                                        ai_response = msg.content
+                                        print(ai_response, end="\n", flush=True)
 
 
 if __name__ == "__main__":
