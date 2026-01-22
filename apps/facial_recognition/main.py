@@ -10,7 +10,10 @@ This implementation is based on and adapted from:
 import cv2
 import numpy as np
 import mediapipe as mp
+import threading
 from apps.shared.keypoint_classifier.classifier import KeyPointClassifier
+from apps.shared.utils.sequence import get_sequence_by_name
+from apps.shared.constants import get_blossom_robot
 
 CAMERA_INDEX = 0
 
@@ -20,6 +23,59 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
 EMOTIONS = ["happy", "sad", "neutral", "surprised"]
+
+# Global state for sequence playback
+current_sequence_lock = threading.Lock()
+current_sequence_name = None
+sequence_thread = None
+
+def play_sequence_async(emotion: str):
+    """Play a sequence for the given emotion in a background thread"""
+    global current_sequence_name
+    
+    try:
+        # Map emotion to sequence name
+        sequence_name = f"{emotion}_sequence"
+        
+        # Get the sequence
+        sequence = get_sequence_by_name(sequence_name)
+        
+        if sequence is None:
+            print(f"Warning: Sequence '{sequence_name}' not found")
+            return
+        
+        print(f"Playing sequence: {sequence_name}")
+        
+        # Play the sequence (blocking)
+        sequence.start()
+        sequence.wait_to_stop()
+        
+        print(f"Finished playing sequence: {sequence_name}")
+        
+    except Exception as e:
+        print(f"Error playing sequence: {e}")
+    finally:
+        # Clear the current sequence when done
+        with current_sequence_lock:
+            current_sequence_name = None
+
+def trigger_emotion_sequence(emotion: str):
+    """Trigger a sequence for the given emotion, only if no sequence is currently playing"""
+    global current_sequence_name, sequence_thread
+    
+    with current_sequence_lock:
+        # Only start new sequence if none is currently playing
+        if current_sequence_name is not None:
+            return False
+        
+        # Mark that we're playing this emotion's sequence
+        current_sequence_name = emotion
+    
+    # Start the sequence in a background thread
+    sequence_thread = threading.Thread(target=play_sequence_async, args=(emotion,), daemon=True)
+    sequence_thread.start()
+    
+    return True
 
 def calc_landmark_list(image, landmarks):
     """Convert MediaPipe landmarks to normalized coordinate list"""
@@ -82,10 +138,16 @@ def draw_info_text(image, brect, emotion, confidence):
     return image
 
 def main():
-    # Load emotion labels
     print(f"Loaded emotion labels: {EMOTIONS}")
     
-    # Initialize emotion classifier
+    try:
+        robot = get_blossom_robot()
+        print("Robot initialized successfully!")
+    except Exception as e:
+        print(f"Warning: Could not initialize robot: {e}")
+        print("Running in simulation mode (sequences will not play)")
+        robot = None
+    
     try:
         emotion_classifier = KeyPointClassifier(model_path='./models/emotion_classifier.tflite')
         print("Emotion classifier loaded successfully!")
@@ -94,7 +156,6 @@ def main():
         print("Please train the model first by running train.py")
         return
     
-    # Initialize camera
     vid = cv2.VideoCapture(CAMERA_INDEX)
     vid.set(cv2.CAP_PROP_FRAME_WIDTH, 960)
     vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 540)
@@ -144,7 +205,9 @@ def main():
                         emotion_id, confidence = emotion_classifier(pre_processed_landmark_list)
                         emotion = EMOTIONS[emotion_id] if emotion_id < len(EMOTIONS) else "unknown"
                         
-                        # Draw emotion information
+                        if robot is not None and confidence > 0.7 and emotion != "unknown":
+                            trigger_emotion_sequence(emotion)
+
                         frame = draw_info_text(frame, brect, emotion, confidence)
                         
                     except Exception as e:
@@ -152,6 +215,22 @@ def main():
                         emotion = "error"
                         confidence = 0.0
                         frame = draw_info_text(frame, brect, emotion, confidence)
+            
+            with current_sequence_lock:
+                if current_sequence_name is not None:
+                    playing_text = f"Playing: {current_sequence_name}"
+                    text_size = cv2.getTextSize(playing_text, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
+                    text_x = (frame.shape[1] - text_size[0]) // 2
+                    text_y = 50
+                    
+                    cv2.rectangle(frame, 
+                                (text_x - 10, text_y - text_size[1] - 10),
+                                (text_x + text_size[0] + 10, text_y + 10),
+                                (0, 255, 0), -1)
+                    
+                    # Text
+                    cv2.putText(frame, playing_text, (text_x, text_y),
+                              cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 2, cv2.LINE_AA)
             
             # Display FPS
             cv2.putText(frame, f"Press 'q' to quit", (10, frame.shape[0] - 10),
