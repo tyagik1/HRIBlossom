@@ -6,15 +6,15 @@
             "positions": [
                 {
                     "dof": "tower_1",
-                    "pos": "5.00"
+                    "pos": "4.50"
                 },
                 {
                     "dof": "tower_2",
-                    "pos": "5.00"
+                    "pos": "4.20"
                 },
                 {
                     "dof": "tower_3",
-                    "pos": "5.00"
+                    "pos": "4.30"
                 },
                 {
                     "dof": "base",
@@ -35,15 +35,15 @@
             "positions": [
                 {
                     "dof": "tower_1",
-                    "pos": "5.00"
+                    "pos": "4.50"
                 },
                 {
                     "dof": "tower_2",
-                    "pos": "5.00"
+                    "pos": "4.20"
                 },
                 {
                     "dof": "tower_3",
-                    "pos": "5.00"
+                    "pos": "4.30"
                 },
                 {
                     "dof": "base",
