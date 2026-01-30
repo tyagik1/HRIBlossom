@@ -22,7 +22,7 @@ mp_face_mesh = mp.solutions.face_mesh
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
-EMOTIONS = ["happy", "sad", "neutral", "surprised"]
+EMOTIONS = ["happy_1", "sad_1", "reset", "happy_10"]
 
 # Global state for sequence playback
 current_sequence_lock = threading.Lock()
@@ -34,23 +34,20 @@ def play_sequence_async(emotion: str):
     global current_sequence_name
     
     try:
-        # Map emotion to sequence name
-        sequence_name = f"{emotion}_sequence"
-        
         # Get the sequence
-        sequence = get_sequence_by_name(sequence_name)
+        sequence = get_sequence_by_name(emotion)
         
         if sequence is None:
-            print(f"Warning: Sequence '{sequence_name}' not found")
+            print(f"Warning: Sequence '{emotion}' not found")
             return
         
-        print(f"Playing sequence: {sequence_name}")
+        print(f"Playing sequence: {emotion}")
         
         # Play the sequence (blocking)
         sequence.start()
         sequence.wait_to_stop()
         
-        print(f"Finished playing sequence: {sequence_name}")
+        print(f"Finished playing sequence: {emotion}")
         
     except Exception as e:
         print(f"Error playing sequence: {e}")

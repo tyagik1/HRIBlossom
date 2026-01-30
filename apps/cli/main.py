@@ -39,6 +39,9 @@ def main():
     while True:
         command = input(prompt)
 
+        if active_sequence_thread is not None and not active_sequence_thread.is_alive():
+            active_sequence_thread = None
+
         match command:
             case "l":
                 print_sequences()
