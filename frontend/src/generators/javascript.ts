@@ -20,7 +20,7 @@ forBlock['create_sequence'] = function (
   const name = block.getFieldValue('NAME');
   const frames = generator.statementToCode(block, 'FRAMES');
   
-  const code = `animationData = {
+  const code = `window.animationData = {
   "animation": "${name}",
   "frame_list": [${frames}]
 };\n`;
