@@ -1,7 +1,9 @@
 from typing import List
 from pypot.dynamixel.io import Dxl320IO
 
+# Change this to the port of your robot
 PORT = "COM3"
+
 BAUDRATE = 1000000
 
 
