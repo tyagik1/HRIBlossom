@@ -10,7 +10,7 @@ HRIBlossom is a research platform for controlling **Blossom** — a soft, expres
 
 1. [How It Works](#how-it-works)
 2. [Prerequisites](#prerequisites)
-3. [Getting the Project Files](#getting-the-project-files)
+3. [Forking and Getting the Project Files](#forking-and-getting-the-project-files)
 4. [Python Environment Setup](#python-environment-setup)
 5. [Hardware Setup (Optional)](#hardware-setup-optional)
 6. [OpenAI API Key (Chat Only)](#openai-api-key-chat-only)
@@ -110,20 +110,70 @@ You only need this if you plan to use the browser-based visual interface.
    npm --version
    ```
 
----
+### 4. Git (for forking and cloning the repository)
 
-## Getting the Project Files
+Git is a version control tool that lets you download the project and track any changes you make to it.
 
-If someone shared a `.zip` file of the project with you:
-
-1. Right-click the `.zip` file and choose **Extract All**
-2. Choose a location (e.g. `C:\Research\HRIBlossom`)
-3. Open PowerShell and navigate to the extracted folder:
+1. Go to [https://git-scm.com/download/win](https://git-scm.com/download/win)
+2. The download should start automatically — run the installer
+3. Accept all default settings on every screen and click **Next** through to the end
+4. Verify in a **new** PowerShell window:
    ```powershell
-   cd "C:\Research\HRIBlossom"
+   git --version
    ```
 
-If the project folder already exists on your machine, simply open PowerShell and navigate to it:
+---
+
+## Forking and Getting the Project Files
+
+### What is a fork?
+
+A **fork** is your own personal copy of this project on GitHub. Forking lets you freely make changes, add features, or experiment without affecting the original project. It is the recommended way to work with HRIBlossom if you intend to customise anything.
+
+> You will need a free GitHub account to fork. Sign up at [https://github.com](https://github.com) if you don't have one.
+
+### Step 1 — Fork the repository on GitHub
+
+1. Open the HRIBlossom repository page on GitHub in your browser
+2. Click the **Fork** button near the top-right of the page
+3. On the next screen, leave all settings as-is and click **Create fork**
+4. GitHub will create a copy of the project under your own account (e.g. `https://github.com/your-username/HRIBlossom`)
+
+### Step 2 — Clone your fork to your computer
+
+"Cloning" downloads your forked copy to your machine so you can run and edit it.
+
+1. On your forked repository page, click the green **Code** button
+2. Make sure **HTTPS** is selected, then click the copy icon to copy the URL (it looks like `https://github.com/your-username/HRIBlossom.git`)
+3. Open PowerShell, navigate to where you want the project folder to live, then run:
+   ```powershell
+   cd C:\Research
+   git clone https://github.com/your-username/HRIBlossom.git
+   ```
+   Replace the URL with the one you copied. This creates an `HRIBlossom` folder at `C:\Research\HRIBlossom`.
+
+4. Navigate into the project:
+   ```powershell
+   cd HRIBlossom
+   ```
+
+### Saving your changes
+
+After editing any files, you can save a snapshot of your work with:
+
+```powershell
+git add .
+git commit -m "Describe what you changed here"
+git push
+```
+
+This uploads your changes back to your fork on GitHub so they are backed up and shareable.
+
+---
+
+### Already have the folder on your machine?
+
+If the project folder already exists on your disk (e.g. it was shared as a ZIP), simply open PowerShell and navigate to it:
 
 ```powershell
 cd "C:\Research\HRIBlossom"
