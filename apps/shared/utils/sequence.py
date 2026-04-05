@@ -13,4 +13,19 @@ def get_all_sequences_str() -> str:
 
 
 def get_sequence_by_name(name: str) -> Sequence | None:
-    return next((sequence for sequence in get_all_sequences() if sequence.animation == name), None)
+    target = name.strip().lower()
+
+    for sequence in get_all_sequences():
+        animation = sequence.animation.strip().lower()
+
+        if animation == target:
+            return sequence
+
+        if f"{animation}_sequence" == target:
+            return sequence
+
+        if animation == target.removesuffix("_sequence"):
+            return sequence
+
+    print("Loaded sequences:", [seq.animation for seq in get_all_sequences()])
+    return None

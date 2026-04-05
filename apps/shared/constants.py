@@ -1,10 +1,13 @@
+import os
 from .models.robot import BlossomRobot
 from .models.robot_config import RobotConfig
 
+CONFIG = None
+BLOSSOM_ROBOT = None
 
-CONFIG = None  # Will be initialized when needed
-BLOSSOM_ROBOT = None  # Will be initialized when needed
-SEQUENCE_DIR = "./sequences"
+# 🔥 FIX: make path absolute instead of relative
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+SEQUENCE_DIR = os.path.join(BASE_DIR, "sequences")
 
 def get_config():
     global CONFIG

@@ -32,16 +32,16 @@ def play_sequence_async(gesture: str):
     
     try:
         if gesture == "thumbs_up":
-            sequence_name = "happy_sequence"
+            sequence_name = "happy_nodding"
         elif gesture == "peace_sign":
-            sequence_name = "yes_sequence"
+            sequence_name = "yes_1"
         elif gesture == "closed_fist":
-            sequence_name = "anger_sequence"
+            sequence_name = "anger"
         elif gesture == "open_palm":
-            sequence_name = "happy_sequence"
+            sequence_name = "happy_up"
         else:
-            sequence_name = "reset_sequence"
-        
+            sequence_name = "reset"
+                
         sequence = get_sequence_by_name(sequence_name)
         
         if sequence is None:
